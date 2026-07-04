@@ -30,41 +30,46 @@ public class ConstructBinaryTreeFromPreorderAndInorderTraversal {
      * }
      */
     class Solution {
-        Map<Integer, Integer> map = new HashMap<>();
+        
         public TreeNode buildTree(int[] preorder, int[] inorder) {
             
-            for(int i = 0; i < inorder.length; i++) {
-                map.put(inorder[i], i);
-            }
-            
-            return build(preorder, 0, preorder.length - 1, inorder, 0, inorder.length - 1);
+            return buildTree(preorder, 0, preorder.length - 1, inorder, 0 ,inorder.length - 1);
         }
 
-        TreeNode build(int[] preorder, int preStart, int preEnd, int[] inorder, int inStart, int inEnd) {
-            if (inStart > inEnd) {
-                // base case
+        private TreeNode buildTree(int[] preorder, int preorderBegin, int preorderEnd, int[] inorder, int inorderBegin, int inordeEnd) {
+
+            if (preorderBegin > preorderEnd || inorderBegin > inordeEnd) {
                 return null;
             }
-            int rootValue = preorder[preStart];
-            // 前序遍历的第一个元素是根节点
-            TreeNode root = new TreeNode(rootValue);
-            // 找到根节点在中序遍历中的位置
-            int rootIndex = map.get(rootValue);
-            // 获取左子树的长度
-            int leftLength = rootIndex - inStart;
-            // 构建左子树
-            TreeNode left = build(preorder, preStart + 1, preStart + leftLength, inorder, inStart, rootIndex - 1);
-            // 构建右子树
-            TreeNode right = build(preorder, preStart + leftLength + 1, preEnd, inorder, rootIndex + 1, inEnd);
-            root.left = left;
-            root.right = right;
-            return root;
+
+            int rootIndexOfInorder = preorderBegin;
+            for(int i = inorderBegin; i<=inordeEnd; i++) {
+                if (inorder[i] == preorder[preorderBegin]) {
+                    rootIndexOfInorder = i;
+                }
+            }
+
+            int leftLength = rootIndexOfInorder - inorderBegin;
+            int rightLength = inordeEnd - rootIndexOfInorder;
+
+
+            TreeNode leftNode = buildTree(preorder, preorderBegin + 1, preorderBegin + leftLength, inorder, inorderBegin, rootIndexOfInorder - 1);
+            TreeNode rightNode = buildTree(preorder, preorderBegin + leftLength + 1, preorderEnd, inorder, rootIndexOfInorder + 1, inordeEnd);
+
+            TreeNode node = new TreeNode(inorder[rootIndexOfInorder], leftNode, rightNode);
+            return node;
+
         }
+
+
     }
     // @lc code=end
 
     public static void main(String[] args) {
         Solution solution = new ConstructBinaryTreeFromPreorderAndInorderTraversal().new Solution();
+        int[] preorder = {3,9,20,15,7};
+        int[] inorder = {9,3,15,20,7};
+        solution.buildTree(preorder, inorder);
         // put your test code here
 
     }

@@ -8,12 +8,14 @@
 package leetcode.editor.cn;
 
 import java.util.*;
+
+import leetcode.editor.cn.CopyListWithRandomPointer.Node;
 import leetcode.editor.common.*;
 
 public class PopulatingNextRightPointersInEachNode {
 
     // @lc code=start
-    /*
+    
     // Definition for a Node.
     class Node {
         public int val;
@@ -34,11 +36,28 @@ public class PopulatingNextRightPointersInEachNode {
             next = _next;
         }
     };
-    */
+    
     
     class Solution {
         public Node connect(Node root) {
+            if (root == null) {
+                return null;
+            }
+
+            travese(root.left, root.right);
+            return root;
             
+        }
+
+        void travese(Node nodeL, Node nodeR) {
+            if (nodeL == null || nodeR == null) {
+                return;
+            }
+
+            nodeL.next = nodeR;
+            travese(nodeL.left, nodeL.right);
+            travese(nodeL.right, nodeR.left);
+            travese(nodeR.left, nodeR.right);
         }
     }
     // @lc code=end
